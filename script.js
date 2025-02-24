@@ -1,4 +1,8 @@
+// Load stored shoppers from localStorage or initialize an empty array
 const shoppers = JSON.parse(localStorage.getItem("shoppers")) || [];
+
+// Ensure shopper list is displayed on page load
+document.addEventListener("DOMContentLoaded", updateShopperTable);
 
 document.getElementById("shopperForm").addEventListener("submit", function(event) {
     event.preventDefault();
@@ -29,13 +33,13 @@ document.getElementById("shopperForm").addEventListener("submit", function(event
         return;
     }
 
-    const existingShopper = shoppers.find(s => s.email === email);
-    if (existingShopper) {
-        existingShopper.name = name;
-        existingShopper.phone = phone;
-        existingShopper.age = age;
-        existingShopper.address = address;
+    // Check if shopper already exists
+    const existingShopperIndex = shoppers.findIndex(s => s.email === email);
+    if (existingShopperIndex !== -1) {
+        // Update existing shopper
+        shoppers[existingShopperIndex] = { email, name, phone, age, address };
     } else {
+        // Add new shopper
         shoppers.push({ email, name, phone, age, address });
     }
 
@@ -47,8 +51,43 @@ document.getElementById("shopperForm").addEventListener("submit", function(event
 function updateShopperTable() {
     const tableBody = document.getElementById("shopperTableBody");
     tableBody.innerHTML = "";
+    
     shoppers.forEach(shopper => {
         const row = `<tr>
             <td>${shopper.email}</td>
             <td>${shopper.name}</td>
-            <td>${shopper.phone ||
+            <td>${shopper.phone || "-"}</td>
+            <td>${shopper.age}</td>
+            <td>${shopper.address}</td>
+            <td><button class='btn btn-danger btn-sm' onclick='deleteShopper("${shopper.email}")'>Delete</button></td>
+        </tr>`;
+        tableBody.innerHTML += row;
+    });
+}
+
+function deleteShopper(email) {
+    const index = shoppers.findIndex(s => s.email === email);
+    if (index !== -1) {
+        shoppers.splice(index, 1);
+        saveShoppers();
+        updateShopperTable();
+    }
+}
+
+// Save shopper list to localStorage
+function saveShoppers() {
+    localStorage.setItem("shoppers", JSON.stringify(shoppers));
+}
+
+// Validate email format
+function validateEmail(email) {
+    return /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email);
+}
+
+// Validate phone format (10-digit number)
+function validatePhone(phone) {
+    return /^\\d{10}$/.test(phone);
+}
+
+// Load saved shoppers on page load
+updateShopperTable();
