@@ -79,9 +79,14 @@ function saveShoppers() {
     localStorage.setItem("shoppers", JSON.stringify(shoppers));
 }
 
+console.log("Entered Email:", email);
+if (!validateEmail(email)) {
+    alert("Please enter a valid email address.");
+    return;
+}
 // Validate email format
 function validateEmail(email) {
-    return /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email);
+    return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/.test(email);
 }
 
 // Validate phone format (10-digit number)
