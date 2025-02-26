@@ -2,59 +2,62 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopper Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sign Up - Bed Sheet Store</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script defer src="script.js"></script>
-    <link rel="stylesheet" href="styles.css">
+    <script defer src="signup.js"></script>
 </head>
-<body class="bg-light">
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">Bed Sheet Store</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Signup Form -->
     <div class="container mt-5">
-      <div class="card shadow p-4">
-            <h2 class="text-center mb-4 text-primary">Shopper Management</h2>
-            <form id="shopperForm" class="mb-4">
-              <div class="mb-3">
-                    <label class="form-label">Email Address (Required)</label>
-                    <input type="email" class="form-control" id="email" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Name (Required)</label>
-                    <input type="text" class="form-control" id="name" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Contact Phone (Optional)</label>
-                  <input type="text" class="form-control" id="phone">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Age (Required)</label>
-                    <input type="number" class="form-control" id="age" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Address (Required)</label>
-                    <input type="text" class="form-control" id="address" required>
-                </div>
-                <button type="submit" class="btn btn-primary w-100">Add/Update Shopper</button>
-          </form>
-        </div>
-        <div class="card shadow mt-4 p-4">
-            <h3 class="text-center text-secondary">Shopper List</h3>
-            <table class="table table-striped table-bordered mt-3">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Email</th>
-                        <th>Name</th>
-                        <th>Phone</th>
-                        <th>Age</th>
-                        <th>Address</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="shopperTableBody">
-                    <!-- Shopper details will be inserted here dynamically -->
-                </tbody>
-            </table>
-        </div>
+        <h2 class="text-center">Sign Up</h2>
+        <form id="signupForm">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" id="email" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="name" class="form-label">Full Name</label>
+                <input type="text" id="name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="phone" class="form-label">Phone Number (Optional)</label>
+                <input type="tel" id="phone" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="age" class="form-label">Age</label>
+                <input type="number" id="age" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="address" class="form-label">Address</label>
+                <textarea id="address" class="form-control" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Sign Up</button>
+        </form>
     </div>
+
+    <footer class="bg-dark text-light text-center py-3 mt-5">
+        <p>© 2024 Bed Sheet Store. All Rights Reserved.</p>
+    </footer>
 
 </body>
 </html>
