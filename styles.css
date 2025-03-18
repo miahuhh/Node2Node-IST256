@@ -67,4 +67,6 @@ body {
   .table th, .table td {
     vertical-align: middle;
   }
-  
+  .card {
+    margin-bottom: 20px;
+  }

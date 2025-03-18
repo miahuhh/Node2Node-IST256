@@ -15,6 +15,7 @@ $(document).ready(function () {
         price: parseFloat($("#productPrice").val().trim()),
         weight: $("#productWeight").val().trim()
       };
+      console.log("Submitting Product:", productData);
   
       // Basic Field Validation
       if (!productData.productId || !productData.description || !productData.category || !productData.unit || isNaN(productData.price)) {

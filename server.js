@@ -37,3 +37,31 @@ app.post("/signup", (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
+
+// Orders Endpoint
+const ORDER_FILE = 'orders.json';
+
+function readOrders() {
+  if (!fs.existsSync(ORDER_FILE)) return [];
+  const data = fs.readFileSync(ORDER_FILE, 'utf8');
+  return data ? JSON.parse(data) : [];
+}
+
+function saveOrders(orders) {
+  fs.writeFileSync(ORDER_FILE, JSON.stringify(orders, null, 2));
+}
+
+// POST Order
+app.post('/api/orders', (req, res) => {
+  const order = req.body;
+  let orders = readOrders();
+  orders.push(order);
+  saveOrders(orders);
+  res.json({ message: "Order submitted successfully." });
+});
+
+// GET Orders (for admin)
+app.get('/api/orders', (req, res) => {
+  const orders = readOrders();
+  res.json(orders);
+});
