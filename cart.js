@@ -21,6 +21,56 @@ $(document).ready(function () {
     );
     displayProducts(filtered);
   });
+
+  // checkout functionality
+  $("#checkoutBtn").on("click", function() {
+    if (cart.length === 0) {
+      alert("Your cart is empty!");
+      return;
+    }
+    
+    const currentUser = localStorage.getItem("currentUser") || "Guest";
+    
+    const order = {
+      user: currentUser,
+      items: cart,
+      orderDate: new Date().toISOString(),
+      total: cart.reduce((total, item) => {
+        const product = products.find(p => p.productId === item.productId);
+        return total + (product.price * item.quantity);
+      }, 0)
+    };
+    
+    // send order to server
+    $.ajax({
+      url: 'http://localhost:3000/api/orders',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(order),
+      success: function(response) {
+        // clear the cart on server
+        cart.forEach(item => {
+          $.ajax({
+            url: `http://localhost:3000/api/cart/${item.productId}`,
+            method: 'DELETE'
+          });
+        });
+        
+        // clear localStorage cart
+        localStorage.setItem("cart", "[]");
+        
+        // show success message and redirect
+        $("#checkoutMessage").text("Order placed successfully! Redirecting to confirmation page...");
+        setTimeout(() => {
+          window.location.href = "confirmation.html";
+        }, 2000);
+      },
+      error: function(err) {
+        console.error(err);
+        alert("Error processing your order. Please try again.");
+      }
+    });
+  });
 });
 
 // Display products

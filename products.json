@@ -1,53 +1,5 @@
 [
   {
-<<<<<<< HEAD
-    "productId": "COTTON-100",
-    "description": "Luxury Cotton Bed Sheet",
-    "category": "Cotton",
-    "unit": "set",
-    "price": 49.99,
-    "weight": "2 lbs"
-  },
-  {
-    "productId": "SILK-200",
-    "description": "Silk Satin Bed Sheet",
-    "category": "Silk",
-    "unit": "set",
-    "price": 69.99,
-    "weight": "1.5 lbs"
-  },
-  {
-    "productId": "BAMBOO-300",
-    "description": "Bamboo Fiber Bed Sheet",
-    "category": "Bamboo",
-    "unit": "set",
-    "price": 59.99,
-    "weight": "1.8 lbs"
-  },
-  {
-    "productId": "EGYPTIAN-400",
-    "description": "Egyptian Cotton Bed Sheet",
-    "category": "Premium Cotton",
-    "unit": "set",
-    "price": 89.99,
-    "weight": "2.2 lbs"
-  },
-  {
-    "productId": "LINEN-500",
-    "description": "Pure Linen Bed Sheet",
-    "category": "Linen",
-    "unit": "set",
-    "price": 79.99,
-    "weight": "2.5 lbs"
-  },
-  {
-    "productId": "TEST-600",
-    "description": "Should show up in Products",
-    "category": "Test",
-    "unit": "set",
-    "price": 55,
-    "weight": "2"
-=======
     "productId": "803",
     "description": "Bamboo Bed Sheet",
     "category": "Bamboo",
@@ -86,6 +38,13 @@
     "unit": "yard",
     "price": 85,
     "weight": ""
->>>>>>> 0b0266e4aae6821ca28fc49fcdab01ae20078786
+  },
+  {
+    "productId": "TEST-600",
+    "description": "Should show up in Products",
+    "category": "Test",
+    "unit": "set",
+    "price": 9.99,
+    "weight": "-"
   }
 ]

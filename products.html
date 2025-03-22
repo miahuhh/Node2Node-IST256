@@ -23,8 +23,7 @@
                     <li class="nav-item mx-2"><a class="nav-link btn btn-primary text-white" href="about.html">About</a></li>
                     <li class="nav-item mx-2"><a class="nav-link btn btn-primary text-white" href="signup.html">Sign Up</a></li>
                     <li class="nav-item mx-2"><a class="nav-link btn btn-primary text-white" href="product-management.html">Manage Products</a></li>
-                    <li class="nav-item mx-2"><a class="nav-link btn btn-primary text-white" href="cart.html"> Cart <span id="cartCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
-                    </a></li>
+                    <li class="nav-item mx-2"><a class="nav-link btn btn-primary text-white" href="cart.html"> Cart <span id="cartCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span></a></li>
                     <li class="nav-item mx-2"><a class="nav-link btn btn-primary text-white" href="contact.html">Contact</a></li>
                 </ul>
             </div>
@@ -135,10 +134,7 @@
                     container.append(createProductCard(product));
                 });
                 
-                $('.add-to-cart-btn').on('click', function() {
-                    const productId = $(this).data('product-id');
-                    addToCart(productId, products);
-                });
+                // Removed the click handler here to prevent duplicate calls
             }
             
             // search
@@ -175,17 +171,43 @@
                 displayProducts(filtered);
             }
             
-            function addToCart(productId, products) {
-                const product = products.find(p => p.productId === productId);
-                
-                if (!product) {
-                    console.error("Product not found:", productId);
-                    alert("Error: Product not found");
-                    return;
-                }
-                
+            function addToCart(productId) {
+                // Get the product data directly from the API first
+                $.ajax({
+                    url: `http://localhost:3000/api/products/${productId}`,
+                    method: 'GET',
+                    success: function(product) {
+                        addProductToCart(product);
+                    },
+                    error: function() {
+                        // If API fails, try to get from products.json
+                        $.ajax({
+                            url: 'products.json',
+                            method: 'GET',
+                            dataType: 'json',
+                            success: function(products) {
+                                console.log("Looking for product:", productId);
+                                const product = products.find(p => p.productId === productId);
+                                
+                                if (product) {
+                                    addProductToCart(product);
+                                } else {
+                                    console.error("Product not found:", productId);
+                                    alert("Error: Product not found");
+                                }
+                            },
+                            error: function() {
+                                alert("Error: Could not load products");
+                            }
+                        });
+                    }
+                });
+            }
+            
+            function addProductToCart(product) {
+                // First, add to localStorage for the cart badge counter
                 let cart = JSON.parse(localStorage.getItem("cart")) || [];
-                const existingItem = cart.find(item => item.productId === productId);
+                const existingItem = cart.find(item => item.productId === product.productId);
                 
                 if (existingItem) {
                     existingItem.quantity += 1;
@@ -196,8 +218,28 @@
                 localStorage.setItem("cart", JSON.stringify(cart));
                 updateCartCount();
                 
-                alert(`${product.description} added to cart!`);
+                // Also add to server API for the cart page to find
+                $.ajax({
+                    url: 'http://localhost:3000/api/cart',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ productId: product.productId, quantity: 1 }),
+                    success: function(response) {
+                        console.log("Added to server cart:", response);
+                        alert(`${product.description} added to cart!`);
+                    },
+                    error: function(err) {
+                        console.error("Error adding to server cart:", err);
+                        alert(`${product.description} added to cart! (Warning: Server sync failed)`);
+                    }
+                });
             }
+            
+            // Single event handler for add to cart buttons using event delegation
+            $(document).on('click', '.add-to-cart-btn', function() {
+                const productId = $(this).data('product-id');
+                addToCart(productId);
+            });
             
             loadProducts();
         });

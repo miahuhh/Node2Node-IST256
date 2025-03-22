@@ -1,0 +1,32 @@
+[
+  {
+    "user": "Guest",
+    "items": [
+      {
+        "productId": "9939",
+        "quantity": 2
+      },
+      {
+        "productId": "851",
+        "quantity": 1
+      }
+    ],
+    "orderDate": "2025-03-22T20:25:58.508Z",
+    "total": 245
+  },
+  {
+    "user": "Guest",
+    "items": [
+      {
+        "productId": "9939",
+        "quantity": 1
+      },
+      {
+        "productId": "851",
+        "quantity": 1
+      }
+    ],
+    "orderDate": "2025-03-22T20:36:18.299Z",
+    "total": 165
+  }
+]
