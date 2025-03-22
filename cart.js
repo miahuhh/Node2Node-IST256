@@ -1,17 +1,18 @@
 let products = [];
 let cart = [];
 
-cart = JSON.parse(localStorage.getItem("cart")) || [];
-updateCartTable();
-updateCartCount();
+// Load products on page load
 $(document).ready(function () {
-  //  Load products from backend
+  // GET Products
   $.get('http://localhost:3000/api/products', function (data) {
     products = data;
     displayProducts(products);
+
+    // Load cart from server (GET cart)
+    loadCart();
   });
 
-  //  Search functionality
+  // Search filter
   $("#searchInput").on("keyup", function () {
     const query = $(this).val().toLowerCase();
     const filtered = products.filter(p => 
@@ -22,14 +23,14 @@ $(document).ready(function () {
   });
 });
 
-//  Display products
+// Display products
 function displayProducts(productList) {
   const container = $("#productList");
   container.empty();
 
   productList.forEach(product => {
     const card = `<div class="col-md-4">
-      <div class="card">
+      <div class="card mb-3">
         <div class="card-body">
           <h5 class="card-title">${product.description}</h5>
           <p class="card-text">Category: ${product.category}</p>
@@ -42,41 +43,53 @@ function displayProducts(productList) {
   });
 }
 
-//  Add to cart
+// Add to cart (POST)
 function addToCart(productId) {
   const product = products.find(p => p.productId === productId);
-  const cartItem = cart.find(c => c.productId === productId);
+  if (!product) return;
 
-  if (cartItem) {
-    cartItem.quantity += 1;
-  } else {
-    cart.push({ ...product, quantity: 1 });
-  }
-  updateCartTable();
-  updateCartCount();
+  $.ajax({
+    url: 'http://localhost:3000/api/cart',
+    method: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify({ productId: productId, quantity: 1 }),
+    success: function (response) {
+      alert("Added to cart!");
+      loadCart();
+    },
+    error: function (err) {
+      console.error(err);
+      alert("Error adding to cart!");
+    }
+  });
 }
 
-//  Remove item
-function removeFromCart(productId) {
-  cart = cart.filter(c => c.productId !== productId);
-  updateCartTable();
-  updateCartCount();
+// Load cart items (GET)
+function loadCart() {
+  $.get('http://localhost:3000/api/cart', function (data) {
+    cart = data;
+    updateCartTable();
+  });
 }
 
-//  Update cart table
+// Update cart table
 function updateCartTable() {
   const tbody = $("#cartTable tbody");
   tbody.empty();
   let total = 0;
 
   cart.forEach(item => {
-    const itemTotal = item.quantity * item.price;
+    const product = products.find(p => p.productId === item.productId);
+    const itemTotal = item.quantity * product.price;
     total += itemTotal;
 
     const row = `<tr>
-      <td>${item.description}</td>
-      <td>${item.quantity}</td>
-      <td>$${item.price.toFixed(2)}</td>
+      <td>${product.description}</td>
+      <td>
+        <input type="number" value="${item.quantity}" min="1" style="width:60px" 
+        onchange='updateQuantity("${item.productId}", this.value)'>
+      </td>
+      <td>$${product.price.toFixed(2)}</td>
       <td>$${itemTotal.toFixed(2)}</td>
       <td><button class="btn btn-danger btn-sm" onclick='removeFromCart("${item.productId}")'>Remove</button></td>
     </tr>`;
@@ -86,75 +99,39 @@ function updateCartTable() {
   $("#cartTotal").text(`Total: $${total.toFixed(2)}`);
 }
 
-//update cart count
-function updateCartCount() {
-  const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-  $("#cartCount").text(count);
-}
+// Update quantity (PUT)
+function updateQuantity(productId, newQty) {
+  newQty = parseInt(newQty);
+  if (newQty <= 0) return;
 
-// Checkout button click
-$("#checkoutBtn").on("click", function () {
-  if (cart.length === 0) {
-    alert("Your cart is empty!");
-    return;
-  }
-
-  // Prepare order data
-  const order = {
-    user: currentUser || "guest",  // Later can link to logged-in user
-    items: cart,
-    total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-    date: new Date().toISOString()
-  };
-  const currentUser = localStorage.getItem("currentUser") || "guest";
-
-
-  // Send order to backend
   $.ajax({
-    url: "http://localhost:3000/api/orders",
-    method: "POST",
-    contentType: "application/json",
-    data: JSON.stringify(order),
+    url: `http://localhost:3000/api/cart/${productId}`,
+    method: 'PUT',
+    contentType: 'application/json',
+    data: JSON.stringify({ quantity: newQty }),
     success: function (response) {
-      // Clear cart
-      cart = [];
-      localStorage.removeItem("cart");
-      updateCartTable();
-      updateCartCount();
-    
-      // Redirect to confirmation page
-      window.location.href = "confirmation.html";
+      alert("Quantity updated!");
+      loadCart();
     },
     error: function (err) {
-      alert("Error processing order.");
       console.error(err);
+      alert("Error updating quantity!");
     }
   });
-});
-
-
-
-// Save cart to localStorage whenever it changes
-function saveCart() {
-  localStorage.setItem("cart", JSON.stringify(cart));
 }
 
-// Modify addToCart and removeFromCart:
-function addToCart(productId) {
-  const product = products.find(p => p.productId === productId);
-  const cartItem = cart.find(c => c.productId === productId);
-
-  if (cartItem) {
-    cartItem.quantity += 1;
-  } else {
-    cart.push({ ...product, quantity: 1 });
-  }
-  saveCart();
-  updateCartTable();
-}
-
+// Remove from cart (DELETE)
 function removeFromCart(productId) {
-  cart = cart.filter(c => c.productId !== productId);
-  saveCart();
-  updateCartTable();
+  $.ajax({
+    url: `http://localhost:3000/api/cart/${productId}`,
+    method: 'DELETE',
+    success: function (response) {
+      alert("Item removed!");
+      loadCart();
+    },
+    error: function (err) {
+      console.error(err);
+      alert("Error removing item!");
+    }
+  });
 }

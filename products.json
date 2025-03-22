@@ -1,1 +1,42 @@
-[]
+[
+  {
+    "productId": "803",
+    "description": "Bamboo Bed Sheet",
+    "category": "Bamboo",
+    "unit": "Yards",
+    "price": 44,
+    "weight": ""
+  },
+  {
+    "productId": "9939",
+    "description": "Purple Silk Bed Sheet",
+    "category": "Silk",
+    "unit": "Yard",
+    "price": 80,
+    "weight": ""
+  },
+  {
+    "productId": "101",
+    "description": "Imperial Egyptian Cotton",
+    "category": "Cotton",
+    "unit": "Yard",
+    "price": 95,
+    "weight": ""
+  },
+  {
+    "productId": "232",
+    "description": "SilkenCloud mulbery Silk Blend",
+    "category": "Silk",
+    "unit": "yard",
+    "price": 130,
+    "weight": ""
+  },
+  {
+    "productId": "851",
+    "description": "ArcticLuxe CoolWeave",
+    "category": "Linen",
+    "unit": "yard",
+    "price": 85,
+    "weight": ""
+  }
+]
