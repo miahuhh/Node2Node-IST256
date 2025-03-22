@@ -38,5 +38,13 @@
     "unit": "set",
     "price": 79.99,
     "weight": "2.5 lbs"
+  },
+  {
+    "productId": "TEST-600",
+    "description": "Should show up in Products",
+    "category": "Test",
+    "unit": "set",
+    "price": 55,
+    "weight": "2"
   }
 ]
