@@ -2,12 +2,24 @@ const express = require("express");
 const fs = require("fs");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const path = require("path");
 
 const app = express();
 const PORT = 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
+
+//static file serving
+app.use(express.static(path.join(__dirname)));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get('/index.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // Endpoint to handle signup form submission
 app.post("/signup", (req, res) => {
@@ -33,9 +45,73 @@ app.post("/signup", (req, res) => {
     });
 });
 
-// Start server
-app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+// PRODUCT ENDPOINTS
+const PRODUCT_FILE = 'products.json';
+
+function readProducts() {
+  if (!fs.existsSync(PRODUCT_FILE)) {
+    return [];
+  }
+  const data = fs.readFileSync(PRODUCT_FILE, 'utf8');
+  return data ? JSON.parse(data) : [];
+}
+
+function saveProducts(products) {
+  fs.writeFileSync(PRODUCT_FILE, JSON.stringify(products, null, 2));
+}
+
+// GET all products
+app.get('/api/products', (req, res) => {
+  const products = readProducts();
+  res.json(products);
+});
+
+// GET single product by ID
+app.get('/api/products/:id', (req, res) => {
+  const products = readProducts();
+  const product = products.find(p => p.productId === req.params.id);
+  
+  if (product) {
+    res.json(product);
+  } else {
+    res.status(404).json({ message: "Product not found" });
+  }
+});
+
+// POST (add or update) product
+app.post('/api/products', (req, res) => {
+  const newProduct = req.body;
+  let products = readProducts();
+  
+  // Check if product with this ID already exists
+  const index = products.findIndex(p => p.productId === newProduct.productId);
+  
+  if (index !== -1) {
+    // Update existing product
+    products[index] = newProduct;
+    saveProducts(products);
+    res.json({ message: "Product updated successfully" });
+  } else {
+    // Add new product
+    products.push(newProduct);
+    saveProducts(products);
+    res.json({ message: "Product added successfully" });
+  }
+});
+
+// DELETE product
+app.delete('/api/products/:id', (req, res) => {
+  let products = readProducts();
+  const initialLength = products.length;
+  
+  products = products.filter(p => p.productId !== req.params.id);
+  
+  if (products.length < initialLength) {
+    saveProducts(products);
+    res.json({ message: "Product deleted successfully" });
+  } else {
+    res.status(404).json({ message: "Product not found" });
+  }
 });
 
 // Orders Endpoint
@@ -64,4 +140,10 @@ app.post('/api/orders', (req, res) => {
 app.get('/api/orders', (req, res) => {
   const orders = readOrders();
   res.json(orders);
+});
+
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`Access the website at http://localhost:${PORT}/index.html`);
 });
