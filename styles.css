@@ -56,17 +56,53 @@ tr:nth-child(even) {
 .navbar-nav .nav-link:hover {
     color: lightgray !important;
 }
+
 body {
     background-color: #f8f9fa;
-  }
-  
-  h2 {
+}
+
+h2 {
     margin-top: 20px;
-  }
-  
-  .table th, .table td {
+}
+
+.table th, .table td {
     vertical-align: middle;
-  }
-  .card {
+}
+
+.card {
     margin-bottom: 20px;
-  }
+}
+
+/* Navbar styling */
+.navbar-nav .nav-link.btn {
+    white-space: nowrap;
+}
+
+/* Improved navbar centering */
+.nav-container {
+    position: relative;
+}
+
+#navbarNav {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+}
+
+/* Adjust placeholders to be less intrusive */
+.navbar-brand.placeholder-left {
+    width: 100px;
+    visibility: hidden;
+}
+
+.navbar-brand.placeholder-right {
+    width: 60px;
+    visibility: hidden;
+}
+
+/* Adjust spacing for better button fit */
+.navbar-nav .nav-item {
+    margin-left: 3px;
+    margin-right: 3px;
+}

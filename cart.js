@@ -6,7 +6,17 @@ $(document).ready(function () {
   // GET Products
   $.get('http://localhost:3000/api/products', function (data) {
     products = data;
-    displayProducts(products);
+    // Don't display products initially
+    
+    // Add empty cart message to the product list area
+    $("#productList").html(`
+      <div class="col-12 text-center" id="emptyCartMessage">
+        <div class="alert alert-info">
+          <h4>No items added yet.</h4>
+          <p>Please navigate over to products or use the search bar to peruse our catalog of bed sheets for one that you like!</p>
+        </div>
+      </div>
+    `);
 
     // Load cart from server (GET cart)
     loadCart();
@@ -15,11 +25,80 @@ $(document).ready(function () {
   // Search filter
   $("#searchInput").on("keyup", function () {
     const query = $(this).val().toLowerCase();
-    const filtered = products.filter(p => 
-      p.productId.toLowerCase().includes(query) || 
-      p.description.toLowerCase().includes(query)
-    );
-    displayProducts(filtered);
+    
+    // Only show products when user is actively searching
+    if (query.length > 0) {
+      const filtered = products.filter(p => 
+        p.productId.toLowerCase().includes(query) || 
+        p.description.toLowerCase().includes(query)
+      );
+      displayProducts(filtered);
+    } else {
+      // Clear product display when search is empty
+      $("#productList").empty();
+      
+      // Show empty cart message if needed
+      if (cart.length === 0) {
+        $("#productList").html(`
+          <div class="col-12 text-center" id="emptyCartMessage">
+            <div class="alert alert-info">
+              <h4>No items added yet.</h4>
+              <p>Please navigate over to products or use the search bar to peruse our catalog of bed sheets for one that you like!</p>
+            </div>
+          </div>
+        `);
+      }
+    }
+  });
+
+  // checkout functionality
+  $("#checkoutBtn").on("click", function() {
+    if (cart.length === 0) {
+      alert("Your cart is empty!");
+      return;
+    }
+    
+    const currentUser = localStorage.getItem("currentUser") || "Guest";
+    
+    const order = {
+      user: currentUser,
+      items: cart,
+      orderDate: new Date().toISOString(),
+      total: cart.reduce((total, item) => {
+        const product = products.find(p => p.productId === item.productId);
+        return total + (product.price * item.quantity);
+      }, 0)
+    };
+    
+    // send order to server
+    $.ajax({
+      url: 'http://localhost:3000/api/orders',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(order),
+      success: function(response) {
+        // clear the cart on server
+        cart.forEach(item => {
+          $.ajax({
+            url: `http://localhost:3000/api/cart/${item.productId}`,
+            method: 'DELETE'
+          });
+        });
+        
+        // clear localStorage cart
+        localStorage.setItem("cart", "[]");
+        
+        // show success message and redirect
+        $("#checkoutMessage").text("Order placed successfully! Redirecting to confirmation page...");
+        setTimeout(() => {
+          window.location.href = "confirmation.html";
+        }, 2000);
+      },
+      error: function(err) {
+        console.error(err);
+        alert("Error processing your order. Please try again.");
+      }
+    });
   });
 
   // checkout functionality
@@ -78,6 +157,15 @@ function displayProducts(productList) {
   const container = $("#productList");
   container.empty();
 
+  if (productList.length === 0) {
+    container.html(`
+      <div class="col-12 text-center">
+        <p>No matching products found.</p>
+      </div>
+    `);
+    return;
+  }
+
   productList.forEach(product => {
     const card = `<div class="col-md-4">
       <div class="card mb-3">
@@ -105,6 +193,9 @@ function addToCart(productId) {
     data: JSON.stringify({ productId: productId, quantity: 1 }),
     success: function (response) {
       alert("Added to cart!");
+      // Clear the search input and product list after adding to cart
+      $("#searchInput").val('');
+      $("#productList").empty();
       loadCart();
     },
     error: function (err) {
@@ -119,6 +210,23 @@ function loadCart() {
   $.get('http://localhost:3000/api/cart', function (data) {
     cart = data;
     updateCartTable();
+    
+    // Hide empty cart message if there are items in the cart
+    if (cart.length > 0) {
+      $("#emptyCartMessage").hide();
+    } else {
+      // If the search field is empty, show the empty cart message
+      if ($("#searchInput").val().trim() === '') {
+        $("#productList").html(`
+          <div class="col-12 text-center" id="emptyCartMessage">
+            <div class="alert alert-info">
+              <h4>No items added yet.</h4>
+              <p>Please navigate over to products or use the search bar to peruse our catalog of bed sheets for one that you like!</p>
+            </div>
+          </div>
+        `);
+      }
+    }
   });
 }
 
