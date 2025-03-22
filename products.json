@@ -38,5 +38,13 @@
     "unit": "yard",
     "price": 85,
     "weight": ""
+  },
+  {
+    "productId": "TEST-600",
+    "description": "Should show up in Products",
+    "category": "Test",
+    "unit": "set",
+    "price": 9.99,
+    "weight": "-"
   }
 ]
