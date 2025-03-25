@@ -204,11 +204,17 @@ app.delete('/api/cart/:productId', (req, res) => {
 
 // POST Order
 app.post('/api/orders', (req, res) => {
-  const order = req.body;
-  let orders = readOrders();
-  orders.push(order);
+  const newOrder = req.body;
+
+  if (!newOrder.user || !newOrder.items || !newOrder.shipping || !newOrder.total) {
+    return res.status(400).json({ message: 'Incomplete order data' });
+  }
+
+  const orders = readOrders();
+  orders.push(newOrder);
   saveOrders(orders);
-  res.json({ message: "Order submitted successfully." });
+
+  res.json({ message: "Order submitted successfully" });
 });
 
 // GET Orders (for admin)
