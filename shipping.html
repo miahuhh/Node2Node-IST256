@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+    <html ng-app="shippingApp"></html>
 <body ng-app="shippingApp" ng-controller="ShippingController"></body>
   <div class="container my-5">
 
@@ -80,10 +81,7 @@
           <input type="text" class="form-control" id="cardName" required />
         </div>
       </div>
-
-     
-    </form>
-    <div class="row">
+ <div class="row">
         <div class="col-md-6 mb-3">
           <label>Shipping Carrier</label>
           <select class="form-select" ng-model="order.shipping.carrier" required>
@@ -103,9 +101,11 @@
           </select>
         </div>
       </div>
+    <button type="submit" class="btn btn-success" ng-click="submitOrder()">Place Order</button>      </div>
+
+    </form>
+   
  <div class="text-center mt-4">
-        <button type="submit" class="btn btn-success">Place Order</button>
-      </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
