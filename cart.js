@@ -101,6 +101,17 @@ function addToCart(productId) {
   const product = products.find(p => p.productId === productId);
   if (!product) return;
 
+  // Update localStorage cart manually
+  let localCart = JSON.parse(localStorage.getItem("cart")) || [];
+  const existing = localCart.find(item => item.productId === productId);
+  if (existing) {
+    existing.quantity += 1;
+  } else {
+    localCart.push({ productId, quantity: 1 });
+  }
+  localStorage.setItem("cart", JSON.stringify(localCart));
+
+  // Send to server too
   $.ajax({
     url: 'http://localhost:3000/api/cart',
     method: 'POST',
@@ -108,7 +119,6 @@ function addToCart(productId) {
     data: JSON.stringify({ productId: productId, quantity: 1 }),
     success: function (response) {
       alert("Added to cart!");
-      // Clear the search input and product list after adding to cart
       $("#searchInput").val('');
       $("#productList").empty();
       loadCart();

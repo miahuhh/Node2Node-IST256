@@ -21,7 +21,7 @@ app.controller('ShippingController', function ($scope, $http, $timeout) {
   // Load products
   $http.get("http://localhost:3000/api/products").then(function (response) {
     $scope.products = response.data;
-  
+    $scope.cart = JSON.parse(localStorage.getItem("cart")) || []; 
     $timeout(function () {
       $scope.renderCartSummary();
     });
@@ -29,22 +29,24 @@ app.controller('ShippingController', function ($scope, $http, $timeout) {
 
   // Calculate totals and build order items
   $scope.renderCartSummary = function () {
-    let total = 0;
+    let subtotal = 0;
     $scope.order.items = $scope.cart.map(item => {
-        const product = $scope.products.find(p => p.productId === item.productId);
-        if (!product) return null;
-      
-        const subtotal = product.price * item.quantity;
-        total += subtotal;
-      
-        return {
-          productId: product.productId,
-          description: product.description,
-          quantity: item.quantity,
-          price: product.price
-        };
-      }).filter(Boolean);
-    $scope.total = total + $scope.shippingCost;
+      const product = $scope.products.find(p => p.productId === item.productId);
+      if (!product) return null;
+  
+      const itemTotal = product.price * item.quantity;
+      subtotal += itemTotal;
+  
+      return {
+        productId: product.productId,
+        description: product.description,
+        quantity: item.quantity,
+        price: product.price
+      };
+    }).filter(Boolean);
+  
+    $scope.subtotal = subtotal; 
+    $scope.total = subtotal + $scope.shippingCost;
     $scope.order.total = $scope.total;
   };
 
