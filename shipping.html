@@ -1,41 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="shippingApp">
 <head>
   <meta charset="UTF-8" />
   <title>Shipping & Checkout - Bed Sheet Store</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .error-message {
+      color: #dc3545;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+    .is-invalid {
+      border-color: #dc3545;
+    }
+  </style>
 </head>
-<body>
-<html ng-app="shippingApp"></html>
-<body ng-app="shippingApp" ng-controller="ShippingController"></body>
+<body ng-controller="ShippingController">
   <div class="container my-5">
 
     <!-- Back to cart button-->
-
     <div class="mb-3">
         <a href="cart.html" class="btn btn-outline-secondary">
           ← Back to Cart
         </a>
-      </div>
+    </div>
 
     <h2 class="text-center">Shipping & Payment</h2>
     <h4 class="text-center my-3">Total Amount Due: ${{ total.toFixed(2) }}</h4>
+
+    <!-- Form Error Alert -->
+    <div class="alert alert-danger" ng-show="formSubmitted && Object.keys(errors).length > 0">
+      Please correct the errors below before submitting.
+    </div>
 
     <!-- Cart Summary -->
     <div id="cartSummary" class="mb-4"></div>
 
     <!-- Shipping/Payment Form -->
     <form ng-submit="submitOrder()" novalidate>
-          <h4>User Info</h4>
+      <h4>User Info</h4>
       <div class="row">
         <div class="col-md-6 mb-3">
           <label>Full Name</label>
-          <input type="text" class="form-control" id="fullName" required />
+          <input type="text" class="form-control" id="fullName" ng-class="{'is-invalid': formSubmitted && errors.fullName}" />
+          <div class="error-message" ng-show="formSubmitted && errors.fullName">{{errors.fullName}}</div>
         </div>
         <div class="col-md-6 mb-3">
           <label>Contact (Email or Phone)</label>
-          <input type="text" class="form-control" id="contactInfo" required />
+          <input type="text" class="form-control" id="contactInfo" ng-class="{'is-invalid': formSubmitted && errors.contactInfo}" />
+          <div class="error-message" ng-show="formSubmitted && errors.contactInfo">{{errors.contactInfo}}</div>
         </div>
       </div>
 
@@ -43,23 +57,28 @@
       <div class="row">
         <div class="col-md-6 mb-3">
           <label>Country/Region</label>
-          <input type="text" class="form-control" id="country" required />
+          <input type="text" class="form-control" id="country" ng-class="{'is-invalid': formSubmitted && errors.country}" />
+          <div class="error-message" ng-show="formSubmitted && errors.country">{{errors.country}}</div>
         </div>
         <div class="col-md-6 mb-3">
           <label>Address</label>
-          <input type="text" class="form-control" id="address" required />
+          <input type="text" class="form-control" id="address" ng-class="{'is-invalid': formSubmitted && errors.address}" />
+          <div class="error-message" ng-show="formSubmitted && errors.address">{{errors.address}}</div>
         </div>
         <div class="col-md-4 mb-3">
           <label>City</label>
-          <input type="text" class="form-control" id="city" required />
+          <input type="text" class="form-control" id="city" ng-class="{'is-invalid': formSubmitted && errors.city}" />
+          <div class="error-message" ng-show="formSubmitted && errors.city">{{errors.city}}</div>
         </div>
         <div class="col-md-4 mb-3">
           <label>State</label>
-          <input type="text" class="form-control" id="state" required />
+          <input type="text" class="form-control" id="state" ng-class="{'is-invalid': formSubmitted && errors.state}" />
+          <div class="error-message" ng-show="formSubmitted && errors.state">{{errors.state}}</div>
         </div>
         <div class="col-md-4 mb-3">
           <label>Postal Code</label>
-          <input type="text" class="form-control" id="postal" required />
+          <input type="text" class="form-control" id="postal" ng-class="{'is-invalid': formSubmitted && errors.postal}" />
+          <div class="error-message" ng-show="formSubmitted && errors.postal">{{errors.postal}}</div>
         </div>
       </div>
 
@@ -67,47 +86,55 @@
       <div class="row">
         <div class="col-md-6 mb-3">
           <label>Card Number</label>
-          <input type="text" class="form-control" id="cardNumber" required />
+          <input type="text" class="form-control" id="cardNumber" ng-class="{'is-invalid': formSubmitted && errors.cardNumber}" />
+          <div class="error-message" ng-show="formSubmitted && errors.cardNumber">{{errors.cardNumber}}</div>
         </div>
         <div class="col-md-3 mb-3">
           <label>Expiration Date</label>
-          <input type="text" class="form-control" id="cardExpiry" placeholder="MM/YY" required />
+          <input type="text" class="form-control" id="cardExpiry" placeholder="MM/YY" ng-class="{'is-invalid': formSubmitted && errors.cardExpiry}" />
+          <div class="error-message" ng-show="formSubmitted && errors.cardExpiry">{{errors.cardExpiry}}</div>
         </div>
         <div class="col-md-3 mb-3">
           <label>Security Code</label>
-          <input type="text" class="form-control" id="cardCVV" required />
+          <input type="text" class="form-control" id="cardCVV" ng-class="{'is-invalid': formSubmitted && errors.cardCVV}" />
+          <div class="error-message" ng-show="formSubmitted && errors.cardCVV">{{errors.cardCVV}}</div>
         </div>
         <div class="col-md-6 mb-3">
           <label>Name on Card</label>
-          <input type="text" class="form-control" id="cardName" required />
+          <input type="text" class="form-control" id="cardName" ng-class="{'is-invalid': formSubmitted && errors.cardName}" />
+          <div class="error-message" ng-show="formSubmitted && errors.cardName">{{errors.cardName}}</div>
         </div>
       </div>
- <div class="row">
+      <div class="row">
         <div class="col-md-6 mb-3">
           <label>Shipping Carrier</label>
-          <select class="form-select" ng-model="order.shipping.carrier" required>
+          <select class="form-select" ng-model="order.shipping.carrier" ng-class="{'is-invalid': formSubmitted && errors.carrier}">
             <option value="">Select</option>
             <option value="UPS">UPS</option>
             <option value="FedEx">FedEx</option>
             <option value="USPS">USPS</option>
           </select>
+          <div class="error-message" ng-show="formSubmitted && errors.carrier">{{errors.carrier}}</div>
         </div>
         <div class="col-md-6 mb-3">
           <label>Shipping Method</label>
-          <select class="form-select" ng-model="order.shipping.method" required>
+          <select class="form-select" ng-model="order.shipping.method" ng-class="{'is-invalid': formSubmitted && errors.method}">
             <option value="">Select</option>
             <option value="Standard">Standard</option>
             <option value="Expedited">Expedited</option>
             <option value="Overnight">Overnight</option>
           </select>
+          <div class="error-message" ng-show="formSubmitted && errors.method">{{errors.method}}</div>
         </div>
       </div>
-    <button type="submit" class="btn btn-success" ng-click="submitOrder()">Place Order</button>      </div>
-
+      <button type="submit" class="btn btn-success">Place Order</button>
     </form>
    
- <div class="text-center mt-4">
+    <div class="text-center mt-4"></div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
-<script src="shipping.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="shipping.js"></script>
+  </div>
+</body>
+</html>
