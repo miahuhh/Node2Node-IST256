@@ -54,6 +54,13 @@ app.controller('ShippingController', function ($scope, $http, $timeout) {
     $scope.order.total = $scope.total;
   };
 
+  // Generate a random order number
+  $scope.generateOrderNumber = function() {
+    const timestamp = new Date().getTime().toString().slice(-6);
+    const randomDigits = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    return `ORD-${timestamp}-${randomDigits}`;
+  };
+
   // Form Validation
   $scope.validate = function() {
     $scope.errors = {};
@@ -128,6 +135,13 @@ app.controller('ShippingController', function ($scope, $http, $timeout) {
       return false;
     }
     
+    // Generate order number
+    const orderNumber = $scope.generateOrderNumber();
+    $scope.order.orderNumber = orderNumber;
+    
+    // Save order number to localStorage for confirmation page
+    localStorage.setItem("orderNumber", orderNumber);
+    
     // Add shipping info from form fields
     $scope.order.shipping.address = {
       country: $("#country").val().trim(),
@@ -143,7 +157,7 @@ app.controller('ShippingController', function ($scope, $http, $timeout) {
       contact: $("#contactInfo").val().trim()
     };
     
-    // Add payment info 
+    // Add payment info
     const cardNumber = $("#cardNumber").val().trim();
     $scope.order.payment = {
       cardLast4: cardNumber.slice(-4),
