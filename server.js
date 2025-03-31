@@ -10,6 +10,8 @@ const PORT = 3000;
 const PRODUCT_FILE = 'products.json';
 const CART_FILE = 'cart.json';
 const ORDER_FILE = 'orders.json';
+const RETURN_FILE = 'returns.json';
+
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -47,6 +49,24 @@ app.post("/signup", (req, res) => {
             res.json({ message: "Signup successful!", shoppers });
         });
     });
+});
+
+// === Returns helpers ===
+function readReturns() {
+  if (!fs.existsSync(RETURN_FILE)) return [];
+  const data = fs.readFileSync(RETURN_FILE, 'utf8');
+  return data ? JSON.parse(data) : [];
+}
+function saveReturns(returns) {
+  fs.writeFileSync(RETURN_FILE, JSON.stringify(returns, null, 2));
+}
+
+app.post('/api/returns', (req, res) => {
+  const returnEntry = req.body;
+  const returns = readReturns();
+  returns.push(returnEntry);
+  saveReturns(returns);
+  res.json({ message: "Return submitted" });
 });
 
 // === Product Helpers ===
