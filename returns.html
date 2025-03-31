@@ -2,42 +2,43 @@
 <html lang="en" ng-app="returnsApp">
 <head>
   <meta charset="UTF-8">
-  <title>Returns</title>
+  <title>Handle Returns</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<!-- Back to cart button-->
+<!-- Back to Homepage button-->
 <div class="mb-3">
   <a href="index.html" class="btn btn-outline-secondary">
-    ← Back to HomePage
+    ← Back to MainPage
   </a>
 </div>
 <body ng-controller="ReturnsController" class="container mt-5">
-  <h2 class="text-center mb-4">Product Return Form</h2>
+  <div class="card p-4 shadow-sm">
+    <h2 class="text-center mb-4">Product Return Form</h2>
 
-  <form ng-submit="submitReturn()">
-    <div class="mb-3">
-      <input type="email" class="form-control" ng-model="returnData.email" placeholder="Your Email" required>
-    </div>
-    <div class="mb-3">
-      <input type="text" class="form-control" ng-model="returnData.orderId" placeholder="Order ID" required>
-    </div>
-
-    <button type="submit" class="btn btn-primary" ng-click="findOrder()">Find My Order</button><br>
-    <br>
-
-    <div class="mb-3" ng-repeat="item in returnData.returns">
-      <div class="input-group">
-        <input type="text" class="form-control" placeholder="Product ID" ng-model="item.productId" required>
-        <input type="text" class="form-control" placeholder="Reason for Return" ng-model="item.reason" required>
-        <button type="button" class="btn btn-danger" ng-click="removeItem($index)">Remove</button>
+    <form ng-submit="submitReturn()">
+      <div class="mb-3">
+        <label>Email</label>
+        <input type="email" class="form-control" ng-model="returnData.email" placeholder="Enter your email" required>
       </div>
-    </div>
 
-    <button type="submit" class="btn btn-primary" ng-click="addItem()">Add Another Product</button>
-    <button type="submit" class="btn btn-primary">Submit Return</button>
-  </form>
+      <div class="mb-3">
+        <button type="button" class="btn btn-outline-info" ng-click="findOrders()">Find My Orders</button>
+      </div>
 
+      <div ng-if="returnData.returns.length > 0">
+        <label>Return Items</label>
+        <div class="mb-3" ng-repeat="item in returnData.returns">
+          <div class="input-group mb-2">
+            <input type="text" class="form-control" ng-model="item.productId" readonly>
+            <input type="text" class="form-control" ng-model="item.reason" placeholder="Reason for return" required>
+            <button type="button" class="btn btn-danger" ng-click="removeItem($index)">Remove</button>
+          </div>
+        </div>
+      </div>
 
+      <button type="submit" class="btn btn-primary" ng-disabled="returnData.returns.length === 0">Submit Return</button>
+    </form>
+  </div>
 
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
   <script src="returns.js"></script>
