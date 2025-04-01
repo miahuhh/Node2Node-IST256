@@ -2,7 +2,7 @@
 <html lang="en" ng-app="returnsApp">
 <head>
   <meta charset="UTF-8">
-  <title>Handle Returns</title>
+  <title>Product Returns</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <!-- Back to Homepage button-->
@@ -12,33 +12,40 @@
   </a>
 </div>
 <body ng-controller="ReturnsController" class="container mt-5">
-  <div class="card p-4 shadow-sm">
-    <h2 class="text-center mb-4">Product Return Form</h2>
+  <h2 class="text-center mb-4">Return Products</h2>
 
-    <form ng-submit="submitReturn()">
-      <div class="mb-3">
-        <label>Email</label>
-        <input type="email" class="form-control" ng-model="returnData.email" placeholder="Enter your email" required>
+  <div class="mb-3">
+    <input type="email" class="form-control" ng-model="email" placeholder="Enter your email to look up orders">
+  </div>
+  <button class="btn btn-info mb-4" ng-click="findOrders()">Find My Products</button>
+
+  <form ng-submit="submitReturn()" ng-if="returnItems.length > 0">
+    <div class="row" ng-repeat="item in returnItems" class="mb-4">
+      <div class="col-md-4">
+        <img ng-src="{{item.image}}" class="img-fluid rounded shadow-sm mb-2" alt="{{item.name}}">
+        <p><strong>{{item.name}}</strong></p>
+        <p>\${{item.price}}</p>
       </div>
-
-      <div class="mb-3">
-        <button type="button" class="btn btn-outline-info" ng-click="findOrders()">Find My Orders</button>
-      </div>
-
-      <div ng-if="returnData.returns.length > 0">
-        <label>Return Items</label>
-        <div class="mb-3" ng-repeat="item in returnData.returns">
-          <div class="input-group mb-2">
-            <input type="text" class="form-control" ng-model="item.productId" readonly>
-            <input type="text" class="form-control" ng-model="item.reason" placeholder="Reason for return" required>
-            <button type="button" class="btn btn-danger" ng-click="removeItem($index)">Remove</button>
-          </div>
+      <div class="col-md-8">
+        <div class="mb-2">
+          <label>Reason for Return</label>
+          <input type="text" class="form-control" ng-model="item.reason" required>
+        </div>
+        <div class="mb-2">
+          <label>Condition</label>
+          <select class="form-select" ng-model="item.condition" required>
+            <option value="">Select Condition</option>
+            <option value="New">New</option>
+            <option value="Used">Used</option>
+            <option value="Damaged">Damaged</option>
+          </select>
         </div>
       </div>
+      <hr class="my-3">
+    </div>
 
-      <button type="submit" class="btn btn-primary" ng-disabled="returnData.returns.length === 0">Submit Return</button>
-    </form>
-  </div>
+    <button type="submit" class="btn btn-primary mt-3">Submit Return Request</button>
+  </form>
 
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
   <script src="returns.js"></script>
