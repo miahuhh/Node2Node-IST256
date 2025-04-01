@@ -1,50 +1,65 @@
 const app = angular.module('returnsApp', []);
 
 app.controller('ReturnsController', function($scope, $http) {
-  $scope.returnData = {
-    email: '',
-    returns: []
-  };
+  $scope.email = '';
+  $scope.returnItems = [];
 
-  $scope.findOrders = function() {
-    if (!$scope.returnData.email) {
+  $scope.findOrders = function () {
+    if (!$scope.email) {
       alert("Please enter your email.");
       return;
     }
 
-    $http.get('/api/orders').then(function(response) {
-      const allOrders = response.data;
-      const matchedItems = [];
+    $http.get('/api/orders').then(function (response) {
+      const orders = response.data;
+      let found = false;
+      $scope.returnItems = [];
 
-      allOrders.forEach(order => {
-        if (order.user.contact === $scope.returnData.email) {
+      orders.forEach(order => {
+        if (order.user.contact === $scope.email) {
+          found = true;
           order.items.forEach(item => {
-            matchedItems.push({
+            $scope.returnItems.push({
               productId: item.productId,
-              reason: ''
+              name: item.description,
+              price: item.price,
+              image: item.image || 'https://via.placeholder.com/150',
+              reason: '',
+              condition: ''
             });
           });
         }
       });
 
-      if (matchedItems.length === 0) {
+      if (!found) {
         alert("No orders found for this email.");
-      } else {
-        $scope.returnData.returns = matchedItems;
       }
     });
   };
 
-  $scope.removeItem = function(index) {
-    $scope.returnData.returns.splice(index, 1);
-  };
+  $scope.submitReturn = function () {
+    const incomplete = $scope.returnItems.some(item => !item.reason || !item.condition);
+    if (incomplete) {
+      alert("Please fill out reason and condition for each product.");
+      return;
+    }
 
-  $scope.submitReturn = function() {
-    $scope.returnData.date = new Date().toISOString();
-    $http.post('/api/returns', $scope.returnData).then(function(response) {
+    const returnPayload = {
+      email: $scope.email,
+      returns: $scope.returnItems.map(item => ({
+        productId: item.productId,
+        name: item.name,
+        price: item.price,
+        reason: item.reason,
+        condition: item.condition
+      })),
+      submittedAt: new Date().toISOString()
+    };
+
+    $http.post('/api/returns', returnPayload).then(function () {
       alert("Return submitted successfully.");
-      $scope.returnData.returns = [];
-    }, function(error) {
+      $scope.returnItems = [];
+    }, function () {
       alert("Error submitting return.");
     });
   };
