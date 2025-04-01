@@ -5,7 +5,8 @@
     "category": "Bamboo",
     "unit": "Yards",
     "price": 44,
-    "weight": ""
+    "weight": "",
+    "image": "images/bamboo.jpg"
   },
   {
     "productId": "9939",
@@ -13,7 +14,8 @@
     "category": "Silk",
     "unit": "Yard",
     "price": 80,
-    "weight": ""
+    "weight": "",
+    "image": "images/purplesilk.jpg"
   },
   {
     "productId": "101",
@@ -21,7 +23,8 @@
     "category": "Cotton",
     "unit": "Yard",
     "price": 95,
-    "weight": ""
+    "weight": "",
+    "image": "images/egyptianCotton.jpg"
   },
   {
     "productId": "232",
@@ -29,7 +32,8 @@
     "category": "Silk",
     "unit": "yard",
     "price": 130,
-    "weight": ""
+    "weight": "",
+    "image": "images/mulberrySilk.jpg"
   },
   {
     "productId": "851",
@@ -37,14 +41,7 @@
     "category": "Linen",
     "unit": "yard",
     "price": 85,
-    "weight": ""
-  },
-  {
-    "productId": "TEST-600",
-    "description": "Should show up in Products",
-    "category": "Test",
-    "unit": "set",
-    "price": 9.99,
-    "weight": "-"
+    "weight": "",
+    "image": "images/coolweave.jpg"
   }
 ]
