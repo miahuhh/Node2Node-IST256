@@ -1,92 +1,42 @@
 [
   {
-    "user": "Guest",
-    "items": [
-      {
-        "productId": "9939",
-        "quantity": 2
-      },
-      {
-        "productId": "851",
-        "quantity": 1
-      }
-    ],
-    "orderDate": "2025-03-22T20:25:58.508Z",
-    "total": 245
-  },
-  {
-    "user": "Guest",
-    "items": [
-      {
-        "productId": "9939",
-        "quantity": 1
-      },
-      {
-        "productId": "803",
-        "quantity": 1
-      }
-    ],
-    "orderDate": "2025-03-25T19:11:02.451Z",
-    "total": 124
-  },
-  {
-    "user": "Guest",
-    "items": [
-      {
-        "productId": "803",
-        "quantity": 1
-      }
-    ],
-    "orderDate": "2025-03-25T19:13:11.571Z",
-    "total": 44
-  },
-  {
-    "user": "Guest",
-    "items": [
-      {
-        "productId": "803",
-        "quantity": 1
-      }
-    ],
-    "orderDate": "2025-03-25T19:16:08.073Z",
-    "total": 44
-  }
-    {
     "user": {
       "name": "Micah T Ash",
-      "contact": "micahash@email.com"
+      "contact": "micahash@gmail.com"
     },
     "shipping": {
-      "carrier": "FedEx",
+      "carrier": "UPS",
       "method": "Standard",
       "address": {
         "country": "USA",
-        "street": "1777 Park Street",
+        "street": "133 Park",
         "city": "York",
         "state": "PA",
-        "postal": "11111"
+        "postal": "111"
       }
     },
     "payment": {
       "cardLast4": "1111",
-      "cardName": "Micah Ash",
-      "cardExpiry": "03/29"
+      "cardName": "Micah A",
+      "cardExpiry": "12/29"
     },
     "items": [
       {
         "productId": "803",
         "description": "Bamboo Bed Sheet",
         "quantity": 2,
-        "price": 44
+        "price": 44,
+        "image": "images/bamboo.jpg"
       },
       {
         "productId": "9939",
         "description": "Purple Silk Bed Sheet",
         "quantity": 1,
-        "price": 80
+        "price": 80,
+        "image": "images/purplesilk.jpg"
       }
     ],
     "total": 177.99,
-    "orderNumber": "ORD-307914-4636"
+    "orderNumber": "ORD-674436-1547"
   }
 ]

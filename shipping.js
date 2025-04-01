@@ -45,7 +45,8 @@ app.controller('ShippingController', function ($scope, $http, $timeout) {
         productId: product.productId,
         description: product.description,
         quantity: item.quantity,
-        price: product.price
+        price: product.price,
+        image: product.image || 'https://via.placeholder.com/300'
       };
     }).filter(Boolean);
   

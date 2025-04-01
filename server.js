@@ -12,7 +12,6 @@ const CART_FILE = 'cart.json';
 const ORDER_FILE = 'orders.json';
 const RETURN_FILE = 'returns.json';
 
-
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -62,11 +61,10 @@ function saveReturns(returns) {
 }
 
 app.post('/api/returns', (req, res) => {
-  const returnEntry = req.body;
   const returns = readReturns();
-  returns.push(returnEntry);
+  returns.push(req.body);
   saveReturns(returns);
-  res.json({ message: "Return submitted" });
+  res.json({ message: "Return submitted successfully." });
 });
 
 // === Product Helpers ===

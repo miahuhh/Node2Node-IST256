@@ -23,7 +23,7 @@ app.controller('ReturnsController', function($scope, $http) {
               productId: item.productId,
               name: item.description,
               price: item.price,
-              image: item.image || 'https://via.placeholder.com/150',
+              image: item.image || 'https://via.placeholder.com/300',
               reason: '',
               condition: ''
             });
