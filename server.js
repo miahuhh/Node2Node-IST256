@@ -11,9 +11,19 @@ const PRODUCT_FILE = 'products.json';
 const CART_FILE = 'cart.json';
 const ORDER_FILE = 'orders.json';
 const RETURN_FILE = 'returns.json';
+const connectDB = require('./db');
+
+const Shopper = require('./models/Shopper');
+const Product = require('./models/Products');
+const Cart = require('./models/Cart');
+const Order = require('./models/Order');
+const Return = require('./models/Returns');
+
+connectDB();
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.json());
 
 //static file serving
 app.use(express.static(path.join(__dirname)));
@@ -245,4 +255,15 @@ app.get('/api/orders', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
   console.log(`Access the website at http://localhost:${PORT}/index.html`);
+});
+
+// === Mongo test
+
+app.get('/test', async (req, res) => {
+  try {
+    const shoppers = await Shopper.find(); // will return an empty array initially
+    res.json({ message: 'MongoDB connected!', shoppers });
+  } catch (err) {
+    res.status(500).json({ error: 'MongoDB connection failed' });
+  }
 });
