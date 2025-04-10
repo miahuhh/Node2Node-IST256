@@ -19,6 +19,18 @@ const Cart = require('./models/Cart');
 const Order = require('./models/Order');
 const Return = require('./models/Returns');
 
+const productRoutes = require('./routes/products');
+const cartRoutes = require('./routes/cart');
+const shippingRoutes = require('./routes/shipping');
+const billingRoutes = require('./routes/billing');
+const returnRoutes = require('./routes/returns');
+
+app.use('/products', productRoutes);
+app.use('/cart', cartRoutes);
+app.use('/shipping', shippingRoutes);
+app.use('/billing', billingRoutes);
+app.use('/returns', returnRoutes);
+
 connectDB();
 
 app.use(cors());
