@@ -41,14 +41,7 @@
     </header>
 
 
-    <!-- Call-to-Action Section -->
-    <section class="bg-light py-5 text-center">
-        <div class="container">
-            <h2>Join Our Community</h2>
-            <p class="lead">Sign up for exclusive deals, discounts, and new product updates.</p>
-            <a href="signup.html" class="btn btn-success btn-lg">Sign Up Now</a>
-        </div>
-    </section>
+  
 
     <!-- Footer -->
     <footer class="bg-dark text-light text-center py-3">
@@ -289,6 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const img = document.createElement("img");
         img.className = "bd-placeholder-img card-img-top";
         img.src = "images/" + (product.image || "placeholder.jpg");
+        img.onerror = () => { img.src = "images/placeholder.jpg"; };
         img.alt = product.description;
 
         const body = document.createElement("div");
@@ -321,8 +315,9 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       container.appendChild(row);
-      document.querySelector('section.bg-light').before(container);
-        })
+      const footer = document.querySelector("footer");
+      footer.parentNode.insertBefore(container, footer);
+    })
     .catch(err => {
       console.error("Failed to load products:", err);
       alert("Error loading products.");
