@@ -6,7 +6,7 @@ const ReturnSchema = new mongoose.Schema({
   reason: String,
   condition: String,
   status: { type: String, default: 'Pending' },
-  requestedAt: { type: Date, default: Date.now },
+  requestedAt: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model('Return', ReturnSchema);
