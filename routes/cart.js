@@ -1,36 +1,38 @@
+
 const express = require('express');
 const router = express.Router();
 const Cart = require('../models/Cart');
+const Product = require('../models/Products');
 
-// GET cart for a specific shopper
-router.get('/:shopperId', async (req, res) => {
+// GET cart (for simplicity, shared cart in this version)
+router.get('/', async (req, res) => {
   try {
-    const cart = await Cart.findOne({ shopperId: req.params.shopperId }).populate('items.productId');
-    res.json(cart || { items: [] }); // Return empty cart if not found
+    const cart = await Cart.findOne().populate('items.productId');
+    res.json(cart || { items: [] });
   } catch (err) {
     res.status(500).json({ error: 'Failed to retrieve cart' });
   }
 });
 
-// POST new cart or add items
+// POST single item to cart
 router.post('/', async (req, res) => {
-  const { shopperId, items } = req.body;
+  const { productId, quantity } = req.body;
 
   try {
-    let cart = await Cart.findOne({ shopperId });
+    const product = await Product.findOne({ productId });
+    if (!product) return res.status(404).json({ error: 'Product not found' });
 
-    if (cart) {
-      // Merge new items with existing cart
-      items.forEach(newItem => {
-        const existingItem = cart.items.find(i => i.productId.toString() === newItem.productId);
-        if (existingItem) {
-          existingItem.quantity += newItem.quantity;
-        } else {
-          cart.items.push(newItem);
-        }
-      });
+    let cart = await Cart.findOne();
+
+    if (!cart) {
+      cart = new Cart({ items: [{ productId: product._id, quantity }] });
     } else {
-      cart = new Cart({ shopperId, items });
+      const existingItem = cart.items.find(i => i.productId.toString() === product._id.toString());
+      if (existingItem) {
+        existingItem.quantity += quantity;
+      } else {
+        cart.items.push({ productId: product._id, quantity });
+      }
     }
 
     await cart.save();
@@ -38,23 +40,6 @@ router.post('/', async (req, res) => {
   } catch (err) {
     console.error('Cart error:', err.message);
     res.status(500).json({ error: 'Failed to update cart' });
-  }
-});
-
-// DELETE a specific item from the cart
-router.delete('/:shopperId/:productId', async (req, res) => {
-  try {
-    const { shopperId, productId } = req.params;
-    const cart = await Cart.findOne({ shopperId });
-
-    if (!cart) return res.status(404).json({ error: 'Cart not found' });
-
-    cart.items = cart.items.filter(item => item.productId.toString() !== productId);
-    await cart.save();
-
-    res.json({ message: 'Item removed from cart', cart });
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to remove item' });
   }
 });
 
