@@ -40,18 +40,6 @@
         </div>
     </header>
 
-    <!-- Product Showcase -->
-    <section class="container my-5">
-        <div id="productContainer" class="row">
-            <!-- Products will be dynamically loaded here -->
-            <div class="text-center">
-                <div class="spinner-border" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-                <p>Loading products...</p>
-            </div>
-        </div>
-    </section>
 
     <!-- Call-to-Action Section -->
     <section class="bg-light py-5 text-center">
@@ -103,9 +91,9 @@
                         console.log("Error loading from API:", error);
                         console.log("Status:", status);
                         
-                        // load directly from products.json file
+                        // load directly from products.patched.json file
                         $.ajax({
-                            url: 'products.json',
+                            url: 'products.patched.json',
                             method: 'GET',
                             dataType: 'json',
                             success: function(products) {
@@ -150,7 +138,7 @@
                     error: function() {
                         // local file if everything fails
                         $.ajax({
-                            url: 'products.json',
+                            url: 'products.patched.json',
                             method: 'GET',
                             dataType: 'json',
                             success: function(products) {
@@ -179,9 +167,9 @@
                         addProductToCart(product);
                     },
                     error: function() {
-                        // If API fails, try to get from products.json
+                        // If API fails, try to get from products.patched.json
                         $.ajax({
-                            url: 'products.json',
+                            url: 'products.patched.json',
                             method: 'GET',
                             dataType: 'json',
                             success: function(products) {
@@ -249,5 +237,98 @@
             $("#cartCount").text(count);
         }
     </script>
+
+<script>
+function addToCart(productId) {
+  fetch('/products')
+    .then(res => res.json())
+    .then(products => {
+      const product = products.find(p => p._id === productId);
+      if (!product) {
+        alert('Product not found.');
+        return;
+      }
+
+      fetch('/cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId: product._id, quantity: 1 })
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log('Added to cart:', data);
+        alert(`Added ${product.description} to cart.`);
+        updateCartCount();
+      })
+      .catch(err => {
+        console.error('Cart error:', err);
+        alert('Failed to add to cart.');
+      });
+    });
+}
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  fetch("/products")
+    .then(res => res.json())
+    .then(products => {
+      const container = document.createElement("div");
+      container.className = "container mt-4";
+      const row = document.createElement("div");
+      row.className = "row";
+
+      products.forEach(product => {
+        const col = document.createElement("div");
+        col.className = "col-md-4";
+
+        const card = document.createElement("div");
+        card.className = "card mb-4 shadow-sm";
+
+        const img = document.createElement("img");
+        img.className = "bd-placeholder-img card-img-top";
+        img.src = "images/" + (product.image || "placeholder.jpg");
+        img.alt = product.description;
+
+        const body = document.createElement("div");
+        body.className = "card-body";
+
+        const title = document.createElement("h5");
+        title.className = "card-title";
+        title.textContent = product.description;
+
+        const text = document.createElement("p");
+        text.className = "card-text";
+        text.innerHTML = `
+          <strong>Category:</strong> ${product.category}<br>
+          <strong>Price:</strong> $${product.price.toFixed(2)}<br>
+          <strong>Weight:</strong> ${product.weight}<br>
+        `;
+
+        const btn = document.createElement("button");
+        btn.className = "btn btn-sm btn-success";
+        btn.textContent = "Add to Cart";
+        btn.onclick = () => alert(`Added ${product.description} to cart`);
+
+        body.appendChild(title);
+        body.appendChild(text);
+        body.appendChild(btn);
+        card.appendChild(img);
+        card.appendChild(body);
+        col.appendChild(card);
+        row.appendChild(col);
+      });
+
+      container.appendChild(row);
+      document.querySelector('section.bg-light').before(container);
+        })
+    .catch(err => {
+      console.error("Failed to load products:", err);
+      alert("Error loading products.");
+    });
+});
+</script>
+
 </body>
 </html>

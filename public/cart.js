@@ -38,7 +38,7 @@ $(document).ready(function () {
       $("#productList").empty();
       
       // Show empty cart message if needed
-      if (cart.length === 0) {
+      if (cart.items.length === 0) {
         $("#productList").html(`
           <div class="col-12 text-center" id="emptyCartMessage">
             <div class="alert alert-info">
@@ -53,7 +53,7 @@ $(document).ready(function () {
 
  // Proceed to shipping page instead of submitting order directly
 $("#checkoutBtn").on("click", function () {
-  if (cart.length === 0) {
+  if (cart.items.length === 0) {
     alert("Your cart is empty!");
     return;
   }
@@ -88,7 +88,7 @@ function displayProducts(productList) {
           <h5 class="card-title">${product.description}</h5>
           <p class="card-text">Category: ${product.category}</p>
           <p class="card-text">Price: $${product.price.toFixed(2)}</p>
-          <button class="btn btn-success" onclick='addToCart("${product.productId}")'>Add to Cart</button>
+          <button class="btn btn-success" onclick='addToCart("${product._id}")'>Add to Cart</button>
         </div>
       </div>
     </div>`;
@@ -98,12 +98,19 @@ function displayProducts(productList) {
 
 // Add to cart (POST)
 function addToCart(productId) {
-  const product = products.find(p => p.productId === productId);
+  const product = products.find(p => p._id === productId);
   if (!product) return;
 
-  // Update localStorage cart manually
+  
+  // Sync to backend MongoDB cart
+  fetch("/cart", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ productId: productId, quantity: 1 })
+  }).then(res => res.json()).then(console.log).catch(console.error);
+// Update localStorage cart manually
   let localCart = JSON.parse(localStorage.getItem("cart")) || [];
-  const existing = localCart.find(item => item.productId === productId);
+  const existing = localCart.find(item => item._id === productId);
   if (existing) {
     existing.quantity += 1;
   } else {
@@ -133,11 +140,11 @@ function addToCart(productId) {
 // Load cart items (GET)
 function loadCart() {
   $.get('/cart', function (data) {
-    cart = data;
+    cart = data || { items: [] };
     updateCartTable();
     
     // Hide empty cart message if there are items in the cart
-    if (cart.length > 0) {
+    if (cart.items.length > 0) {
       $("#emptyCartMessage").hide();
     } else {
       // If the search field is empty, show the empty cart message
@@ -161,8 +168,8 @@ function updateCartTable() {
   tbody.empty();
   let total = 0;
 
-  cart.forEach(item => {
-    const product = products.find(p => p.productId === item.productId);
+  cart.items.forEach(item => {
+    const product = products.find(p => p._id === item.productId);
     const itemTotal = item.quantity * product.price;
     total += itemTotal;
 
