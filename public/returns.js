@@ -10,7 +10,7 @@ app.controller('ReturnsController', function($scope, $http) {
       return;
     }
 
-    $http.get('/api/orders').then(function (response) {
+    $http.get('/orders').then(function (response) {
       const orders = response.data;
       let found = false;
       $scope.returnItems = [];
@@ -56,7 +56,7 @@ app.controller('ReturnsController', function($scope, $http) {
       submittedAt: new Date().toISOString()
     };
 
-    $http.post('/api/returns', returnPayload).then(function () {
+    $http.post('/returns', returnPayload).then(function () {
       alert("Return submitted successfully.");
       $scope.returnItems = [];
     }, function () {

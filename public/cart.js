@@ -4,7 +4,7 @@ let cart = [];
 // Load products on page load
 $(document).ready(function () {
   // GET Products
-  $.get('http://localhost:3000/api/products', function (data) {
+  $.get('/products', function (data) {
     products = data;
     // Don't display products initially
     
@@ -113,7 +113,7 @@ function addToCart(productId) {
 
   // Send to server too
   $.ajax({
-    url: 'http://localhost:3000/api/cart',
+    url: '/cart',
     method: 'POST',
     contentType: 'application/json',
     data: JSON.stringify({ productId: productId, quantity: 1 }),
@@ -132,7 +132,7 @@ function addToCart(productId) {
 
 // Load cart items (GET)
 function loadCart() {
-  $.get('http://localhost:3000/api/cart', function (data) {
+  $.get('/cart', function (data) {
     cart = data;
     updateCartTable();
     
@@ -188,7 +188,7 @@ function updateQuantity(productId, newQty) {
   if (newQty <= 0) return;
 
   $.ajax({
-    url: `http://localhost:3000/api/cart/${productId}`,
+    url: `/cart/${productId}`,
     method: 'PUT',
     contentType: 'application/json',
     data: JSON.stringify({ quantity: newQty }),
@@ -206,7 +206,7 @@ function updateQuantity(productId, newQty) {
 // Remove from cart (DELETE)
 function removeFromCart(productId) {
   $.ajax({
-    url: `http://localhost:3000/api/cart/${productId}`,
+    url: `/cart/${productId}`,
     method: 'DELETE',
     success: function (response) {
       alert("Item removed!");

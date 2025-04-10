@@ -23,7 +23,7 @@ app.controller('ShippingController', function ($scope, $http, $timeout) {
   };
 
   // Load products
-  $http.get("http://localhost:3000/api/products").then(function (response) {
+  $http.get("/products").then(function (response) {
     $scope.products = response.data;
     $scope.cart = JSON.parse(localStorage.getItem("cart")) || []; 
     $timeout(function () {
@@ -170,7 +170,7 @@ app.controller('ShippingController', function ($scope, $http, $timeout) {
     $scope.orderSubmitted = true;
 
     // Submit to backend
-    $http.post("http://localhost:3000/api/orders", $scope.order)
+    $http.post("/billing", $scope.order)
       .then(function () {
         alert("Order submitted successfully!");
         localStorage.removeItem("cart");

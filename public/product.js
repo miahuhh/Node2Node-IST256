@@ -27,7 +27,7 @@ $(document).ready(function () {
     if (editMode) {
       // PUT request for updating
       $.ajax({
-        url: `http://localhost:3000/api/products/${editingProductId}`,
+        url: `/products/${editingProductId}`,
         method: 'PUT',
         contentType: 'application/json',
         data: JSON.stringify(productData),
@@ -44,7 +44,7 @@ $(document).ready(function () {
     } else {
       // POST request for new product
       $.ajax({
-        url: 'http://localhost:3000/api/products',
+        url: '/products',
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(productData),
@@ -73,7 +73,7 @@ $(document).ready(function () {
 
 // Load products from backend
 function loadProducts() {
-  $.get('http://localhost:3000/api/products', function (data) {
+  $.get('/products', function (data) {
     products = data;
     updateProductTable();
   });
@@ -86,15 +86,15 @@ function updateProductTable() {
 
   products.forEach(product => {
     const row = `<tr>
-      <td>${product.productId}</td>
+      <td>${product._id}</td>
       <td>${product.description}</td>
       <td>${product.category}</td>
       <td>${product.unit}</td>
       <td>$${product.price.toFixed(2)}</td>
       <td>${product.weight || "-"}</td>
       <td>
-        <button class="btn btn-warning btn-sm me-2" onclick='editProduct("${product.productId}")'>Edit</button>
-        <button class="btn btn-danger btn-sm" onclick='deleteProduct("${product.productId}")'>Delete</button>
+        <button class="btn btn-warning btn-sm me-2" onclick='editProduct("${product._id}")'>Edit</button>
+        <button class="btn btn-danger btn-sm" onclick='deleteProduct("${product._id}")'>Delete</button>
       </td>
     </tr>`;
     tbody.append(row);
@@ -105,7 +105,7 @@ function updateProductTable() {
 function editProduct(productId) {
   const product = products.find(p => p.productId === productId);
   if (product) {
-    $("#productId").val(product.productId);
+    $("#productId").val(product._id);
     $("#productDescription").val(product.description);
     $("#productCategory").val(product.category);
     $("#productUnit").val(product.unit);
@@ -120,7 +120,7 @@ function editProduct(productId) {
 // Delete product
 function deleteProduct(productId) {
   $.ajax({
-    url: `http://localhost:3000/api/products/${productId}`,
+    url: `/products/${productId}`,
     method: 'DELETE',
     success: function (response) {
       alert(response.message);
