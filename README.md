@@ -26,6 +26,9 @@ This is an e-commerce website for Luxury Bed Sheets, developed as part of IST256
 - Bootstrap 5.3.0
 - JavaScript
 - Node.js
+- MongoDB
+- AJAX
+- AngularJS
 
 ## Pages
 - Home (index.html)
@@ -33,7 +36,11 @@ This is an e-commerce website for Luxury Bed Sheets, developed as part of IST256
 - About (about.html)
 - Contact (contact.html)
 - Sign Up (signup.html)
+- Shipping & Billing (shipping.html
+- 
 
 ## Setup Instructions
 1. Clone the repository
-2. Open index.html in a web browser
+2. Install Mongoose
+3. Run mongod
+4. Open index.html in a web browser
