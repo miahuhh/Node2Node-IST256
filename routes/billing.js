@@ -1,24 +1,34 @@
 const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order');
-const auth = require('../middleware/auth');
-const Billing = require('../models/Billing');
-
 
 // POST billing info
-router.post("/", auth, async (req, res) => {
+router.post('/', async (req, res) => {
+  const {
+    shopperId,
+    cart,
+    billingAddress,
+    shippingAddress,
+    paymentMethod,
+    totalAmount
+  } = req.body;
+
   try {
-    const billingData = new Billing({
-      userId: req.user._id,
-      ...req.body
+    const newOrder = new Order({
+      shopperId,
+      cart,
+      billingAddress,
+      shippingAddress,
+      paymentMethod,
+      totalAmount
     });
 
-    await billingData.save();
-    res.status(201).json({ message: "Billing info saved", billing: billingData });
+    await newOrder.save();
+    res.status(201).json({ message: 'Order placed successfully', order: newOrder });
   } catch (err) {
-    res.status(500).json({ error: "Failed to save billing info" });
+    console.error('Billing error:', err.message);
+    res.status(500).json({ error: 'Failed to store billing information' });
   }
 });
-
 
 module.exports = router;
