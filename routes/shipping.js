@@ -1,33 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order');
+const auth = require('../middleware/auth');
+const Shipping = require('../models/Shipping');
 
 // POST shipping info (creates a new order with shipping details)
-router.post('/', async (req, res) => {
-  const {
-    shopperId,
-    cart,
-    shippingAddress,
-    billingAddress,
-    paymentMethod,
-    totalAmount
-  } = req.body;
-
+router.post("/", auth, async (req, res) => {
   try {
-    const newOrder = new Order({
-      shopperId,
-      cart,
-      shippingAddress,
-      billingAddress,     // Optional if already submitted via billing route
-      paymentMethod,
-      totalAmount
+    const shipping = new Shipping({
+      userId: req.user._id,
+      ...req.body
     });
 
-    await newOrder.save();
-    res.status(201).json({ message: 'Shipping details saved', order: newOrder });
+    await shipping.save();
+    res.status(201).json({ message: "Shipping info saved", shipping });
   } catch (err) {
-    console.error('Shipping error:', err.message);
-    res.status(500).json({ error: 'Failed to store shipping info' });
+    res.status(500).json({ error: "Failed to save shipping info" });
   }
 });
 
