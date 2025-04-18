@@ -11,7 +11,6 @@ This is an e-commerce website for Luxury Bed Sheets, developed as part of IST256
 - Micah Ash (mxa6160@psu.edu)
 - Nicholas Crum (njc5827@psu.edu) 
 - Bilal Siddiq (bbs5630@psu.edu)
-- Cyrus Darvishian
 
 ## Features
 - Responsive design using Bootstrap 5
