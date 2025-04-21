@@ -1,51 +1,64 @@
 
-const express = require('express');
-const router = express.Router();
-const Product = require('../models/Products');
+document.addEventListener("DOMContentLoaded", function () {
+  const container = document.getElementById("productContainer");
 
-// GET all products
-router.get('/', async (req, res) => {
-  try {
-    const products = await Product.find();
-    res.json(products);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch products' });
+  function createProductCard(product) {
+    const col = document.createElement("div");
+    col.className = "col-md-4 mb-4";
+
+    const card = document.createElement("div");
+    card.className = "card h-100";
+
+    const img = document.createElement("img");
+    img.src = product.image || "https://via.placeholder.com/300";
+    img.className = "card-img-top";
+    img.alt = product.description;
+
+    const cardBody = document.createElement("div");
+    cardBody.className = "card-body";
+
+    const title = document.createElement("h5");
+    title.className = "card-title";
+    title.textContent = product.description;
+
+    const category = document.createElement("p");
+    category.className = "card-text";
+    category.textContent = "Category: " + product.category;
+
+    const price = document.createElement("p");
+    price.className = "card-text";
+    price.textContent = "Price: $" + parseFloat(product.price).toFixed(2);
+
+    const addBtn = document.createElement("button");
+    addBtn.className = "btn btn-success";
+    addBtn.textContent = "Add to Cart";
+    addBtn.onclick = function () {
+      alert(product.description + " added to cart!");
+    };
+
+    cardBody.append(title, category, price, addBtn);
+    card.append(img, cardBody);
+    col.append(card);
+    return col;
   }
-});
 
-// POST a new product
-router.post('/', async (req, res) => {
-  const { productId, description, category, unit, price, weight } = req.body;
+  function displayProducts(products) {
+    container.innerHTML = "";
+    if (!products.length) {
+      container.innerHTML = "<p>No products available.</p>";
+      return;
+    }
 
-  try {
-    const newProduct = new Product({ productId, description, category, unit, price, weight });
-    await newProduct.save();
-    res.status(201).json(newProduct);
-  } catch (err) {
-    res.status(400).json({ error: 'Failed to add product' });
+    products.forEach(product => {
+      container.appendChild(createProductCard(product));
+    });
   }
-});
 
-// PUT update product by _id
-router.put('/:id', async (req, res) => {
-  try {
-    const updated = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updated) return res.status(404).json({ error: 'Product not found' });
-    res.json({ message: 'Product updated', product: updated });
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to update product' });
-  }
+  fetch("/api/products")
+    .then(response => response.json())
+    .then(displayProducts)
+    .catch(err => {
+      console.error("Failed to load products:", err);
+      container.innerHTML = "<p>Error loading products.</p>";
+    });
 });
-
-// DELETE product by _id
-router.delete('/:id', async (req, res) => {
-  try {
-    const deleted = await Product.findByIdAndDelete(req.params.id);
-    if (!deleted) return res.status(404).json({ error: 'Product not found' });
-    res.json({ message: 'Product deleted', product: deleted });
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to delete product' });
-  }
-});
-
-module.exports = router;
